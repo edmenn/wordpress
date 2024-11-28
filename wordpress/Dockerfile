@@ -1,4 +1,4 @@
-FROM wordpress:latest-php8.2-apache
+FROM wordpress:6.7.1-php8.3-apache
 
 # Instalar extensiones y dependencias necesarias
 RUN apt-get update && apt-get install -y \
