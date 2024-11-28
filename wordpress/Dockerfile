@@ -32,6 +32,10 @@ RUN apt-get update && apt-get install -y \
 # Copiar el archivo php.ini personalizado
 COPY php.ini /usr/local/etc/php/
 
-# Establecer la zona horaria (opcional)
-ENV TZ=America/Mexico_City
+# Establecer la zona horaria
+ENV TZ=America/Asuncion
 RUN echo "date.timezone=${TZ}" > /usr/local/etc/php/conf.d/timezone.ini
+
+# Configurar el entorno de Apache (opcional)
+ENV APACHE_RUN_GROUP www-data
+ENV APACHE_RUN_USER www-data
