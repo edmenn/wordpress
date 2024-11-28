@@ -1,19 +1,23 @@
-FROM wordpress:6.7.1-php8.3-apache
+FROM wordpress:php8.2-apache
 
-# Instalar extensiones y dependencias necesarias
-RUN apt-get update && apt-get install -y \
+# Actualizar paquetes e instalar dependencias necesarias
+RUN apt-get update && apt-get install -y --no-install-recommends \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
     libpng-dev \
     libzip-dev \
-    libonig-dev \
     libxml2-dev \
     libicu-dev \
     libxslt1-dev \
     libmagickwand-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) \
-    gd \
+    libmagickcore-dev
+
+# Configurar e instalar la extensión gd
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg
+RUN docker-php-ext-install -j$(nproc) gd
+
+# Instalar otras extensiones de PHP
+RUN docker-php-ext-install -j$(nproc) \
     mysqli \
     mbstring \
     zip \
@@ -25,9 +29,13 @@ RUN apt-get update && apt-get install -y \
     xml \
     exif \
     pcntl \
-    gettext \
-    && pecl install imagick \
-    && docker-php-ext-enable imagick
+    gettext
+
+# Instalar y habilitar imagick
+RUN pecl install imagick && docker-php-ext-enable imagick
+
+# Limpiar caché de apt
+RUN rm -rf /var/lib/apt/lists/*
 
 # Copiar el archivo php.ini personalizado
 COPY php.ini /usr/local/etc/php/
@@ -35,7 +43,3 @@ COPY php.ini /usr/local/etc/php/
 # Establecer la zona horaria
 ENV TZ=America/Asuncion
 RUN echo "date.timezone=${TZ}" > /usr/local/etc/php/conf.d/timezone.ini
-
-# Configurar el entorno de Apache (opcional)
-ENV APACHE_RUN_GROUP www-data
-ENV APACHE_RUN_USER www-data
