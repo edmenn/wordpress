@@ -11,12 +11,10 @@ services:
       MYSQL_PASSWORD: wordpress
 
   wordpress:
-    build:
-      context: ./wordpress
-      dockerfile: Dockerfile
+    image: wordpress:6.7.1-php8.1-apache
     volumes:
       - wordpress_data:/var/www/html
-      - ./logs:/var/log
+      - ./php.ini:/usr/local/etc/php/conf.d/php.ini
     ports:
       - "32768:80"
     restart: always
@@ -24,6 +22,7 @@ services:
       WORDPRESS_DB_HOST: db:3306
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress
+      TZ: America/Asuncion
 
 volumes:
   db_data:
