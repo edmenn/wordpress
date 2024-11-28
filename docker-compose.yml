@@ -14,7 +14,7 @@ services:
     image: wordpress:6.7.1-php8.1-apache
     volumes:
       - wordpress_data:/var/www/html
-      - ./php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ./php.ini:/usr/local/etc/php/conf.d/php.custom.ini
     ports:
       - "32768:80"
     restart: always
