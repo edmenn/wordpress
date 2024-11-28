@@ -11,6 +11,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxslt1-dev \
     libmagickwand-dev \
     libmagickcore-dev \
+    imagemagick \
+    pkg-config \
     libonig-dev \
     && rm -rf /var/lib/apt/lists/*
 
@@ -25,17 +27,15 @@ RUN docker-php-ext-install -j$(nproc) \
     zip \
     intl \
     soap \
+    xsl \
     opcache \
     bcmath \
     exif \
     pcntl \
     gettext
 
-# Instalar y habilitar xsl usando PECL si es necesario
-RUN pecl install xsl && docker-php-ext-enable xsl || true
-
-# Instalar y habilitar imagick
-RUN pecl install imagick && docker-php-ext-enable imagick
+# Instalar y habilitar imagick (versión compatible con PHP 8.2)
+RUN pecl install imagick-beta && docker-php-ext-enable imagick
 
 # Copiar el archivo php.ini personalizado
 COPY php.ini /usr/local/etc/php/
