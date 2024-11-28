@@ -10,7 +10,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libicu-dev \
     libxslt1-dev \
     libmagickwand-dev \
-    libmagickcore-dev
+    libmagickcore-dev \
+    libonig-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 # Configurar e instalar la extensión gd
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
@@ -23,19 +25,17 @@ RUN docker-php-ext-install -j$(nproc) \
     zip \
     intl \
     soap \
-    xsl \
     opcache \
     bcmath \
-    xml \
     exif \
     pcntl \
     gettext
 
+# Instalar y habilitar xsl usando PECL si es necesario
+RUN pecl install xsl && docker-php-ext-enable xsl || true
+
 # Instalar y habilitar imagick
 RUN pecl install imagick && docker-php-ext-enable imagick
-
-# Limpiar caché de apt
-RUN rm -rf /var/lib/apt/lists/*
 
 # Copiar el archivo php.ini personalizado
 COPY php.ini /usr/local/etc/php/
